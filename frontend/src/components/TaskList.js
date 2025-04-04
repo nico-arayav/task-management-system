@@ -10,8 +10,6 @@ import {
 } from "@mui/material";
 
 const TaskList = ({ tasks, onEdit, onDelete }) => {
-	console.log("TaskList received tasks:", tasks); // Debug log
-
 	return (
 		<Box>
 			<Typography variant="h4" gutterBottom>
