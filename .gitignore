@@ -16,6 +16,16 @@ __pycache__/
 requirements.txt.lock
 .task/
 
+# Python dependencies installed locally by serverless-python-requirements
+task-backend/bin/
+task-backend/lib/
+task-backend/lib64/
+task-backend/site-packages/
+task-backend/**/bin/
+task-backend/**/lib/
+task-backend/**/lib64/
+task-backend/**/site-packages/
+
 # Node.js
 node_modules/
 build/
