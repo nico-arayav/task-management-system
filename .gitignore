@@ -25,6 +25,10 @@ task-backend/**/bin/
 task-backend/**/lib/
 task-backend/**/lib64/
 task-backend/**/site-packages/
+task-backend/**/__pycache__/
+task-backend/**/pytest/
+task-backend/**/tests/
+task-backend/**/dist-info/
 
 # Node.js
 node_modules/
