@@ -73,8 +73,8 @@ const App = () => {
 							elevation={3}
 							style={{
 								padding: "16px",
-								height: "100%",
 								backgroundColor: "#ffffff", // White card background
+								marginBottom: "16px", // Add spacing below the Task List
 							}}
 						>
 							<TaskList
@@ -89,7 +89,6 @@ const App = () => {
 							elevation={3}
 							style={{
 								padding: "16px",
-								height: "100%",
 								backgroundColor: "#ffffff", // White card background
 							}}
 						>
