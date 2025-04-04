@@ -1,4 +1,3 @@
-# filepath: backend/routes.py
 from fastapi import APIRouter, HTTPException
 from models import Task
 from database import tasks_collection
@@ -17,7 +16,7 @@ async def get_tasks():
 
 @router.post("/tasks")
 async def create_task(task: Task):
-	task_dict = task.dict()
+	task_dict = task.model_dump()
 	result = tasks_collection.insert_one(task_dict)
 	task_dict["id"] = str(result.inserted_id)
 	task_dict.pop("_id", None)
@@ -31,7 +30,7 @@ async def update_task(task_id: str, task: Task):
 		raise HTTPException(status_code=400, detail="Invalid task ID format")
 	
 	result = tasks_collection.update_one(
-		{"_id": object_id}, {"$set": task.dict()}
+		{"_id": object_id}, {"$set": task.model_dump()}
 	)
 	if result.matched_count == 0:
 		raise HTTPException(status_code=404, detail="Task not found")
