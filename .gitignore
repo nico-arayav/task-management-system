@@ -7,14 +7,26 @@
 venv/
 __pycache__/
 *.pyc
+requirements.txt.lock
+.task/
 
 # Node.js
 node_modules/
 build/
 dist/
 
+# Serverless
+.serverless/  # Serverless build artifacts
+*.requirements.zip  # Zipped Python dependencies created by serverless-python-requirements
+
 # Docker
 *.dockerignore
 
 # VSCode
 .vscode/
+
+# Windows
+Thumbs.db
+
+# macOS
+.DS_Store
