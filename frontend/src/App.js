@@ -4,7 +4,7 @@ import TaskList from "./components/TaskList";
 import TaskForm from "./components/TaskForm";
 import TaskChart from "./components/TaskChart";
 import axios from "axios";
-import { Container, Grid, Paper } from "@mui/material";
+import { Container, Grid, Paper, Box, Typography } from "@mui/material";
 
 const App = () => {
 	const [tasks, setTasks] = useState([]);
@@ -12,7 +12,6 @@ const App = () => {
 
 	const fetchTasks = async () => {
 		const response = await axios.get("http://127.0.0.1:8000/api/tasks");
-		console.log("Fetched tasks:", response.data); // Debug log
 		setTasks(response.data);
 	};
 
@@ -48,34 +47,58 @@ const App = () => {
 	};
 
 	return (
-		<Container>
-			<TaskForm
-				onSubmit={handleAddOrUpdateTask}
-				initialData={editingTask}
-			/>
-			<Grid container spacing={2} style={{ marginTop: "16px" }}>
-				<Grid item size={{ xs: 12, sm: 8 }}>
-					<Paper
-						elevation={3}
-						style={{ padding: "16px", height: "100%" }}
-					>
-						<TaskList
-							tasks={tasks}
-							onEdit={(task) => setEditingTask(task)}
-							onDelete={handleDeleteTask}
-						/>
-					</Paper>
+		<Box
+			sx={{
+				minHeight: "100vh",
+				backgroundColor: "#f5f5f5", // Light gray background
+				padding: "16px",
+			}}
+		>
+			<Container>
+				<Typography
+					variant="h3"
+					align="center"
+					gutterBottom
+					sx={{ color: "#333" }}
+				>
+					Task Management System
+				</Typography>
+				<TaskForm
+					onSubmit={handleAddOrUpdateTask}
+					initialData={editingTask}
+				/>
+				<Grid container spacing={2} style={{ marginTop: "16px" }}>
+					<Grid item size={{ xs: 12, sm: 8 }}>
+						<Paper
+							elevation={3}
+							style={{
+								padding: "16px",
+								height: "100%",
+								backgroundColor: "#ffffff", // White card background
+							}}
+						>
+							<TaskList
+								tasks={tasks}
+								onEdit={(task) => setEditingTask(task)}
+								onDelete={handleDeleteTask}
+							/>
+						</Paper>
+					</Grid>
+					<Grid item size={{ xs: 12, sm: 4 }}>
+						<Paper
+							elevation={3}
+							style={{
+								padding: "16px",
+								height: "100%",
+								backgroundColor: "#ffffff", // White card background
+							}}
+						>
+							<TaskChart tasks={tasks} />
+						</Paper>
+					</Grid>
 				</Grid>
-				<Grid item size={{ xs: 12, sm: 4 }}>
-					<Paper
-						elevation={3}
-						style={{ padding: "16px", height: "100%" }}
-					>
-						<TaskChart tasks={tasks} />
-					</Paper>
-				</Grid>
-			</Grid>
-		</Container>
+			</Container>
+		</Box>
 	);
 };
 
