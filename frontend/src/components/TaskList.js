@@ -1,6 +1,5 @@
 // filepath: src/components/TaskList.js
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import React from "react";
 import {
 	Box,
 	Typography,
@@ -10,21 +9,8 @@ import {
 	ListItemText,
 } from "@mui/material";
 
-const TaskList = ({ onEdit, onDelete }) => {
-	const [tasks, setTasks] = useState([]);
-
-	useEffect(() => {
-		fetchTasks();
-	}, []);
-
-	const fetchTasks = async () => {
-		try {
-			const response = await axios.get("http://127.0.0.1:8000/api/tasks");
-			setTasks(response.data);
-		} catch (error) {
-			console.error("Error fetching tasks:", error);
-		}
-	};
+const TaskList = ({ tasks, onEdit, onDelete }) => {
+	console.log("TaskList received tasks:", tasks); // Debug log
 
 	return (
 		<Box>
@@ -37,6 +23,7 @@ const TaskList = ({ onEdit, onDelete }) => {
 						<ListItemText
 							primary={task.title}
 							secondary={`${task.description} - ${task.status}`}
+							style={{ marginRight: "16px" }}
 						/>
 						<Button
 							variant="contained"

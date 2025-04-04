@@ -12,6 +12,7 @@ const App = () => {
 
 	const fetchTasks = async () => {
 		const response = await axios.get("http://127.0.0.1:8000/api/tasks");
+		console.log("Fetched tasks:", response.data); // Debug log
 		setTasks(response.data);
 	};
 
@@ -20,16 +21,20 @@ const App = () => {
 	}, []);
 
 	const handleAddOrUpdateTask = async (task) => {
-		if (editingTask) {
-			await axios.put(
-				`http://127.0.0.1:8000/api/tasks/${editingTask.id}`,
-				task
-			);
-		} else {
-			await axios.post("http://127.0.0.1:8000/api/tasks", task);
+		try {
+			if (editingTask) {
+				await axios.put(
+					`http://127.0.0.1:8000/api/tasks/${editingTask.id}`,
+					task
+				);
+			} else {
+				await axios.post("http://127.0.0.1:8000/api/tasks", task);
+			}
+			setEditingTask(null);
+			await fetchTasks();
+		} catch (error) {
+			console.error("Error updating or adding task:", error);
 		}
-		setEditingTask(null);
-		fetchTasks();
 	};
 
 	const handleDeleteTask = async (taskId) => {
@@ -55,6 +60,7 @@ const App = () => {
 						style={{ padding: "16px", height: "100%" }}
 					>
 						<TaskList
+							tasks={tasks}
 							onEdit={(task) => setEditingTask(task)}
 							onDelete={handleDeleteTask}
 						/>
