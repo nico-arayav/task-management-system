@@ -2,6 +2,7 @@
 .DS_Store
 *.log
 *.env
+.env.*
 
 # Python
 venv/
@@ -16,28 +17,18 @@ __pycache__/
 requirements.txt.lock
 .task/
 
-# Python dependencies installed locally by serverless-python-requirements
-task-backend/bin/
-task-backend/lib/
-task-backend/lib64/
-task-backend/site-packages/
-task-backend/**/bin/
-task-backend/**/lib/
-task-backend/**/lib64/
-task-backend/**/site-packages/
-task-backend/**/__pycache__/
-task-backend/**/pytest/
-task-backend/**/tests/
-task-backend/**/dist-info/
-
 # Node.js
 node_modules/
 build/
 dist/
+coverage/
 
 # Serverless
-.serverless/  # Serverless build artifacts
-*.requirements.zip  # Zipped Python dependencies created by serverless-python-requirements
+.serverless/
+.webpack/
+*.requirements.zip
+package-lock.json
+yarn.lock
 
 # Docker
 *.dockerignore
@@ -55,3 +46,7 @@ Thumbs.db
 *.tmp
 *.swp
 *.swo
+
+# AWS
+.aws-sam/
+samconfig.toml
