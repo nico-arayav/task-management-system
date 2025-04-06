@@ -23,13 +23,6 @@ build/
 dist/
 coverage/
 
-# Serverless
-.serverless/
-.webpack/
-*.requirements.zip
-package-lock.json
-yarn.lock
-
 # Docker
 *.dockerignore
 
