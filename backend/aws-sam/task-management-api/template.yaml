@@ -1,0 +1,82 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  task-management-api
+
+  Task Management System API using FastAPI and MongoDB
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Timeout: 30
+    MemorySize: 256
+    Environment:
+      Variables:
+        MONGODB_URI: !Sub '{{resolve:secretsmanager:${AWS::StackName}-mongodb-uri:SecretString:mongodb_uri}}'
+        DATABASE_NAME: task_management_dev
+    LoggingConfig:
+      LogFormat: JSON
+
+Resources:
+  TaskManagementFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: src/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Architectures:
+        - x86_64
+      Events:
+        GetTasks:
+          Type: Api
+          Properties:
+            Path: /api/tasks
+            Method: get
+        CreateTask:
+          Type: Api
+          Properties:
+            Path: /api/tasks
+            Method: post
+        UpdateTask:
+          Type: Api
+          Properties:
+            Path: /api/tasks/{task_id}
+            Method: put
+        DeleteTask:
+          Type: Api
+          Properties:
+            Path: /api/tasks/{task_id}
+            Method: delete
+      Policies:
+        - AWSLambdaBasicExecutionRole
+        - AWSLambdaVPCAccessExecutionRole
+        - SecretsManagerReadWrite
+
+  ApplicationResourceGroup:
+    Type: AWS::ResourceGroups::Group
+    Properties:
+      Name:
+        Fn::Sub: ApplicationInsights-SAM-${AWS::StackName}
+      ResourceQuery:
+        Type: CLOUDFORMATION_STACK_1_0
+
+  ApplicationInsightsMonitoring:
+    Type: AWS::ApplicationInsights::Application
+    Properties:
+      ResourceGroupName:
+        Ref: ApplicationResourceGroup
+      AutoConfigurationEnabled: 'true'
+
+Outputs:
+  # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
+  # Find out more about other implicit resources you can reference within SAM
+  # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
+  TaskManagementApi:
+    Description: API Gateway endpoint URL for Prod stage
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/api/"
+  TaskManagementFunction:
+    Description: Task Management Lambda Function ARN
+    Value: !GetAtt TaskManagementFunction.Arn
+  TaskManagementFunctionIamRole:
+    Description: Implicit IAM Role created for Task Management function
+    Value: !GetAtt TaskManagementFunctionRole.Arn
