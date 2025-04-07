@@ -5,7 +5,6 @@ Description: >
 
   Task Management System API using FastAPI and DynamoDB
 
-# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
   Function:
     Timeout: 30
@@ -30,8 +29,17 @@ Resources:
           KeyType: HASH
       BillingMode: PAY_PER_REQUEST
 
+  TaskManagementApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: Prod
+      Cors:
+        AllowOrigin: "'*'"  # Allow all origins (use specific domains for production)
+        AllowHeaders: "'Content-Type,Authorization'"
+        AllowMethods: "'GET,POST,PUT,DELETE,OPTIONS'"
+
   TaskManagementFunction:
-    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Type: AWS::Serverless::Function
     Properties:
       CodeUri: src/
       Handler: app.handler
@@ -42,42 +50,31 @@ Resources:
         GetTasks:
           Type: Api
           Properties:
+            RestApiId: !Ref TaskManagementApi
             Path: /api/tasks
             Method: get
         CreateTask:
           Type: Api
           Properties:
+            RestApiId: !Ref TaskManagementApi
             Path: /api/tasks
             Method: post
         UpdateTask:
           Type: Api
           Properties:
+            RestApiId: !Ref TaskManagementApi
             Path: /api/tasks/{task_id}
             Method: put
         DeleteTask:
           Type: Api
           Properties:
+            RestApiId: !Ref TaskManagementApi
             Path: /api/tasks/{task_id}
             Method: delete
       Policies:
         - AWSLambdaBasicExecutionRole
         - DynamoDBCrudPolicy:
             TableName: !Ref TableName
-
-  ApplicationResourceGroup:
-    Type: AWS::ResourceGroups::Group
-    Properties:
-      Name:
-        Fn::Sub: ApplicationInsights-SAM-${AWS::StackName}
-      ResourceQuery:
-        Type: CLOUDFORMATION_STACK_1_0
-
-  ApplicationInsightsMonitoring:
-    Type: AWS::ApplicationInsights::Application
-    Properties:
-      ResourceGroupName:
-        Ref: ApplicationResourceGroup
-      AutoConfigurationEnabled: 'true'
 
 Parameters:
   TableName:
@@ -86,12 +83,9 @@ Parameters:
     Description: Name of the DynamoDB table
 
 Outputs:
-  # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
-  # Find out more about other implicit resources you can reference within SAM
-  # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
   TaskManagementApi:
     Description: API Gateway endpoint URL for Prod stage
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/api/"
+    Value: !Sub "https://${TaskManagementApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/api/"
   TaskManagementFunction:
     Description: Task Management Lambda Function ARN
     Value: !GetAtt TaskManagementFunction.Arn
